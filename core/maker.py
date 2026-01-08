@@ -138,23 +138,18 @@ class Maker:
         )
         
         if orders_to_cancel:
-            cl_ord_ids = [o.cl_ord_id for o in orders_to_cancel]
-            logger.info(f"Cancelling {len(cl_ord_ids)} orders: {cl_ord_ids}")
-            
-            try:
-                await self.client.cancel_orders(cl_ord_ids)
-                
-                # Clear cancelled orders from state
-                for order in orders_to_cancel:
+            for order in orders_to_cancel:
+                logger.info(f"Cancelling order: {order.cl_ord_id}")
+                try:
+                    await self.client.cancel_order(order.cl_ord_id)
                     self.state.set_order(order.side, None)
-                
-            except Exception as e:
-                logger.error(f"Failed to cancel orders: {e}")
-                send_notify(
-                    "StandX 撤单失败",
-                    f"{self.config.symbol} 撤单失败: {e}",
-                    priority="high"
-                )
+                except Exception as e:
+                    logger.error(f"Failed to cancel order {order.cl_ord_id}: {e}")
+                    send_notify(
+                        "StandX 撤单失败",
+                        f"{self.config.symbol} 撤单失败: {e}",
+                        priority="high"
+                    )
             
             # Don't place new orders this tick
             return
