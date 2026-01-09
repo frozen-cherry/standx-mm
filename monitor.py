@@ -419,6 +419,22 @@ async def monitor_loop(accounts: List[AccountState]):
 
 async def main(config_paths: List[str]):
     """Main entry point."""
+    # Check notification configuration
+    notify_url = os.environ.get("NOTIFY_URL", "")
+    notify_api_key = os.environ.get("NOTIFY_API_KEY", "")
+    
+    logger.info("=" * 50)
+    logger.info("Notification Configuration:")
+    if notify_url:
+        logger.info(f"  NOTIFY_URL: {notify_url}")
+        logger.info(f"  NOTIFY_API_KEY: {'*' * 8 if notify_api_key else '(not set)'}")
+        logger.info("  -> Telegram notifications ENABLED")
+    else:
+        logger.info("  NOTIFY_URL: (not set)")
+        logger.info("  -> Telegram notifications DISABLED")
+        logger.info("  -> Alerts will only be logged locally")
+    logger.info("=" * 50)
+    
     logger.info(f"Starting monitor for {len(config_paths)} accounts")
     
     # Initialize all accounts
