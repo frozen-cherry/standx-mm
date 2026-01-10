@@ -291,8 +291,8 @@ class Maker:
             True if reduction was executed, False otherwise
         """
         max_pos = self.config.max_position_btc
-        threshold = max_pos * 0.5
-        target = max_pos * 0.4
+        threshold = max_pos * 0.7
+        target = max_pos * 0.5
         
         current_pos = abs(self.state.position)
         if current_pos <= threshold:
